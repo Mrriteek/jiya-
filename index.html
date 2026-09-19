@@ -16,6 +16,10 @@
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
+  <!-- Firebase Compat Libraries (App & Firestore) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
   <style>
     :root {
       --bg-dark: #0a0414;
@@ -899,6 +903,88 @@
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.1); }
     }
+
+    /* FIREBASE AUTHENTICATION LUXURY ENHANCEMENT STYLES */
+    .user-greeting-banner {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-gold);
+      border-radius: 50px;
+      padding: 8px 24px;
+      margin: 0 auto 20px;
+      max-width: max-content;
+      box-shadow: 0 4px 20px rgba(245, 158, 11, 0.15);
+      animation: modalPop 0.4s ease-out;
+    }
+    .user-greeting-banner.is-active {
+      display: inline-flex;
+    }
+    .user-greeting-name {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+    }
+    .vip-status-tag {
+      background: var(--gold-gradient);
+      color: #261300;
+      font-size: 0.75rem;
+      font-weight: 900;
+      padding: 4px 12px;
+      border-radius: 30px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+    }
+    .fb-loader-spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-top-color: var(--champagne-gold);
+      border-radius: 50%;
+      animation: spinLoader 0.75s linear infinite;
+    }
+    @keyframes spinLoader {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .fb-auth-input {
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1.5px solid var(--border-gold);
+      color: #ffffff;
+      font-size: 1rem;
+      outline: none;
+      text-align: center;
+      margin-bottom: 16px;
+      transition: var(--transition-smooth);
+    }
+    .fb-auth-input:focus {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: var(--primary-rose);
+      box-shadow: 0 0 20px rgba(255, 45, 117, 0.4);
+    }
+    .fb-error-msg {
+      color: #f87171;
+      font-size: 0.85rem;
+      margin-top: 10px;
+      display: none;
+    }
+    .switch-name-link {
+      display: inline-block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-decoration: underline;
+      margin-left: 8px;
+    }
+    .switch-name-link:hover {
+      color: var(--soft-pink);
+    }
   </style>
 </head>
 <body>
@@ -930,6 +1016,13 @@
     <!-- Hero Section -->
     <main>
       <section class="hero-section">
+        <!-- Live Firebase User Greeting & VIP Status Banner -->
+        <div id="userGreetingBanner" class="user-greeting-banner">
+          <span id="userGreetingText" class="user-greeting-name">Welcome 👋</span>
+          <span id="vipStatusBadge" class="vip-status-tag">⭐ VIP MEMBER</span>
+          <span class="switch-name-link" onclick="openWelcomeModal(true)">Switch Name</span>
+        </div>
+
         <div class="hero-pill-badge">✨ Official Exclusive VIP Portal</div>
         <h1 class="hero-main-title">
           Welcome to <br />
@@ -945,7 +1038,7 @@
             <img 
               src="1.png" 
               alt="Jiya Kumari Profile Avatar" 
-              class="profile-avatar-img"
+              class="profile-avatar-img" 
               onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80';"
             />
             <div class="verified-checkmark">✓</div>
@@ -1025,6 +1118,25 @@
 
   </div>
 
+  <!-- STEP 1: Luxury Welcome Name Modal -->
+  <div id="welcomeNameModal" class="vip-modal-backdrop">
+    <div class="modal-veil"></div>
+    <div class="modal-frame-box">
+      <div class="modal-crown-icon">👑</div>
+      <h3 class="modal-main-title">Welcome</h3>
+      <p class="modal-paragraph">Please Enter Your Name</p>
+
+      <input type="text" id="userNameInput" class="fb-auth-input" placeholder="e.g. Riteek" autocomplete="off" />
+      
+      <button id="btnSubmitName" class="btn-pay-master" onclick="submitUserName()">
+        <span id="btnSubmitNameText">Continue</span>
+        <span id="btnSubmitNameSpinner" class="fb-loader-spinner" style="display:none;"></span>
+      </button>
+
+      <p id="fbWelcomeError" class="fb-error-msg">Connection Error. Please Try Again.</p>
+    </div>
+  </div>
+
   <!-- 1. VIP Payment Modal -->
   <div id="paymentModal" class="vip-modal-backdrop">
     <div class="modal-veil" onclick="closePaymentModal()"></div>
@@ -1043,7 +1155,7 @@
         <div class="price-big-number">₹19</div>
       </div>
 
-      <button class="btn-pay-master" onclick="initiateRazorpayPayment()">
+      <button id="btnRazorpayTrigger" class="btn-pay-master" onclick="initiateRazorpayPayment()">
         <span>Pay with Razorpay / UPI</span>
         <span>➔</span>
       </button>
@@ -1092,11 +1204,35 @@
     <div class="lightbox-enclosure" id="lightboxViewport"></div>
   </div>
 
+  <!-- ==================== MAIN JAVASCRIPT & FIREBASE INTEGRATION ==================== -->
   <script>
+    /* =========================================================
+       FIREBASE CONFIGURATION & INITIALIZATION
+       ========================================================= */
+    const firebaseConfig = {
+      apiKey: "AIzaSyAb6miiZZddxKCAZ7RVhzWbnoJTwx31hIU",
+      authDomain: "jiyakumari-3d99c.firebaseapp.com",
+      projectId: "jiyakumari-3d99c",
+      storageBucket: "jiyakumari-3d99c.firebasestorage.app",
+      messagingSenderId: "746537932302",
+      appId: "1:746537932302:web:7610ea6e88463303c50e5f",
+      measurementId: "G-2R84J6BKD9"
+    };
+
+    // Initialize Firebase
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.firestore();
+
+    /* =========================================================
+       APP CONSTANTS & DOM REFERENCES
+       ========================================================= */
     const RAZORPAY_KEY_ID = 'rzp_live_TdklEadv80vn89';
     const RAZORPAY_AMOUNT_PAISE = 1900;
     const DIRECT_PAYMENT_URL = 'https://rzp.io/rzp/RRcAtrZk';
     const VIP_STORAGE_KEY = 'jiya_vip_unlocked';
+    const USERNAME_STORAGE_KEY = 'username';
     const POSTS_STORAGE_KEY = 'jiya_custom_posts';
 
     const navVipBadge = document.getElementById('navVipBadge');
@@ -1107,9 +1243,18 @@
     const successModal = document.getElementById('successModal');
     const lightboxModal = document.getElementById('lightboxModal');
     const lightboxViewport = document.getElementById('lightboxViewport');
+    const welcomeNameModal = document.getElementById('welcomeNameModal');
+    const userNameInput = document.getElementById('userNameInput');
+    const userGreetingBanner = document.getElementById('userGreetingBanner');
+    const userGreetingText = document.getElementById('userGreetingText');
+    const fbWelcomeError = document.getElementById('fbWelcomeError');
+    const btnSubmitName = document.getElementById('btnSubmitName');
+    const btnSubmitNameText = document.getElementById('btnSubmitNameText');
+    const btnSubmitNameSpinner = document.getElementById('btnSubmitNameSpinner');
 
     let isUserVip = false;
     let activeFilter = 'all';
+    let currentUsername = '';
 
     const DEFAULT_GALLERY_ITEMS = [
       {
@@ -1179,6 +1324,171 @@
         locked: true
       }
     ];
+
+    /* =========================================================
+       FIRESTORE PREMIUM AUTHENTICATION CORE FUNCTIONS
+       ========================================================= */
+
+    /**
+     * Sanitizes username string for use as a Firestore Document ID.
+     */
+    function cleanUsernameKey(name) {
+      return (name || '').trim().replace(/[\/\#\?\[\]]/g, '');
+    }
+
+    /**
+     * Shows/hides loading state on Name Submit button
+     */
+    function setNameSubmitLoading(isLoading) {
+      if (isLoading) {
+        btnSubmitNameText.style.display = 'none';
+        btnSubmitNameSpinner.style.display = 'inline-block';
+        btnSubmitName.disabled = true;
+      } else {
+        btnSubmitNameText.style.display = 'inline-block';
+        btnSubmitNameSpinner.style.display = 'none';
+        btnSubmitName.disabled = false;
+      }
+    }
+
+    /**
+     * Displays greeting on Homepage Header
+     */
+    function renderUserHeader(username, isVip) {
+      if (username) {
+        userGreetingBanner.classList.add('is-active');
+        userGreetingText.innerHTML = `Hello, <strong>${escapeString(username)}</strong> 👋`;
+        const badge = document.getElementById('vipStatusBadge');
+        if (isVip) {
+          badge.style.display = 'inline-block';
+          badge.textContent = '⭐ VIP MEMBER';
+          badge.style.background = 'var(--gold-gradient)';
+          badge.style.color = '#261300';
+        } else {
+          badge.style.display = 'inline-block';
+          badge.textContent = 'STANDARD PASS';
+          badge.style.background = 'rgba(255, 255, 255, 0.1)';
+          badge.style.color = '#fff';
+        }
+      } else {
+        userGreetingBanner.classList.remove('is-active');
+      }
+    }
+
+    /**
+     * Real-time verification of user premium status from Firestore
+     */
+    async function verifyFirestorePremium(username) {
+      const docKey = cleanUsernameKey(username);
+      if (!docKey) return false;
+
+      try {
+        const docRef = db.collection("premiumUsers").doc(docKey);
+        const docSnap = await docRef.get();
+
+        if (docSnap.exists) {
+          const data = docSnap.data();
+          if (data && data.premium === true) {
+            return true;
+          }
+        }
+        return false;
+      } catch (err) {
+        console.error("Firestore Premium Check Error:", err);
+        throw err;
+      }
+    }
+
+    /**
+     * Creates or updates user record in Firestore after successful payment/verification
+     */
+    async function markUserPremiumInFirestore(username, paymentStatus = "success") {
+      const docKey = cleanUsernameKey(username);
+      if (!docKey) return;
+
+      try {
+        await db.collection("premiumUsers").doc(docKey).set({
+          premium: true,
+          paymentStatus: paymentStatus,
+          updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+        }, { merge: true });
+      } catch (err) {
+        console.error("Error writing to Firestore:", err);
+      }
+    }
+
+    /**
+     * Opens Welcome Popup
+     */
+    function openWelcomeModal(force = false) {
+      fbWelcomeError.style.display = 'none';
+      if (force && currentUsername) {
+        userNameInput.value = currentUsername;
+      }
+      welcomeNameModal.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => userNameInput.focus(), 300);
+    }
+
+    /**
+     * Closes Welcome Popup
+     */
+    function closeWelcomeModal() {
+      welcomeNameModal.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    /**
+     * Handles User Name Submission from Modal
+     */
+    async function submitUserName() {
+      const entered = userNameInput.value.trim();
+      if (!entered) {
+        userNameInput.focus();
+        return;
+      }
+
+      fbWelcomeError.style.display = 'none';
+      setNameSubmitLoading(true);
+
+      try {
+        currentUsername = entered;
+        localStorage.setItem(USERNAME_STORAGE_KEY, currentUsername);
+
+        // Check Firestore database structure: premiumUsers/USERNAME
+        const isPremium = await verifyFirestorePremium(currentUsername);
+
+        if (isPremium) {
+          // STEP 5: Unlocks VIP completely
+          localStorage.setItem(VIP_STORAGE_KEY, 'true');
+          syncVipState();
+        } else {
+          // STEP 6: Keep locked
+          localStorage.removeItem(VIP_STORAGE_KEY);
+          syncVipState();
+        }
+
+        renderUserHeader(currentUsername, isPremium);
+        setNameSubmitLoading(false);
+        closeWelcomeModal();
+      } catch (error) {
+        setNameSubmitLoading(false);
+        // STEP 13: Connection Error Handling
+        fbWelcomeError.textContent = "Connection Error. Please Try Again.";
+        fbWelcomeError.style.display = 'block';
+      }
+    }
+
+    // Submit on Enter key in name field
+    userNameInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        submitUserName();
+      }
+    });
+
+    /* =========================================================
+       GALLERY & UI LOGIC
+       ========================================================= */
 
     function loadVaultContent() {
       isUserVip = localStorage.getItem(VIP_STORAGE_KEY) === 'true';
@@ -1291,12 +1601,21 @@
         }
       }
       loadVaultContent();
+      renderUserHeader(currentUsername, isUserVip);
     }
 
-    function unlockVipAccess(showSuccessPopup = true) {
+    /**
+     * Unlocks VIP in local state and pushes update to Firestore
+     */
+    async function unlockVipAccess(showSuccessPopup = true) {
       localStorage.setItem(VIP_STORAGE_KEY, 'true');
       syncVipState();
       closePaymentModal();
+
+      // Update Firestore for current user
+      if (currentUsername) {
+        await markUserPremiumInFirestore(currentUsername, "success");
+      }
 
       if (typeof confetti === 'function') {
         confetti({
@@ -1319,6 +1638,9 @@
         name: "Jiya Kumari Premium",
         description: "Lifetime VIP Media Access & Telegram Channel",
         image: "1.png",
+        prefill: {
+          name: currentUsername || ""
+        },
         handler: function (response) {
           if (response && response.razorpay_payment_id) {
             unlockVipAccess(true);
@@ -1434,6 +1756,7 @@
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
+    /* Ambient Sparkle Particle Canvas */
     const canvas = document.getElementById('sparkleCanvas');
     const ctx = canvas.getContext('2d');
 
@@ -1471,8 +1794,37 @@
     }
     animateParticles();
 
-    window.addEventListener('DOMContentLoaded', () => {
+    /* =========================================================
+       INITIALIZATION & APP STARTUP
+       ========================================================= */
+    window.addEventListener('DOMContentLoaded', async () => {
       syncVipState();
+
+      // Read username from localStorage
+      currentUsername = localStorage.getItem(USERNAME_STORAGE_KEY) || '';
+
+      if (!currentUsername) {
+        // STEP 1: Show luxury premium popup if no name found
+        setTimeout(() => {
+          openWelcomeModal();
+        }, 500);
+      } else {
+        // Render header greeting immediately
+        renderUserHeader(currentUsername, isUserVip);
+
+        // STEP 9: Check Firestore again on reload
+        try {
+          const hasFirestorePremium = await verifyFirestorePremium(currentUsername);
+          if (hasFirestorePremium) {
+            localStorage.setItem(VIP_STORAGE_KEY, 'true');
+          } else {
+            localStorage.removeItem(VIP_STORAGE_KEY);
+          }
+          syncVipState();
+        } catch (e) {
+          console.warn("Offline or failed initial Firestore sync. Retaining existing session state.");
+        }
+      }
     });
   </script>
 </body>
