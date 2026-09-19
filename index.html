@@ -73,6 +73,25 @@
       position: relative;
     }
 
+    /* Page-level Loading Overlay */
+    #globalAppLoader {
+      position: fixed;
+      inset: 0;
+      z-index: 1000000;
+      background: var(--bg-dark);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+    #globalAppLoader.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
     .ambient-sphere {
       position: fixed;
       border-radius: 50%;
@@ -989,6 +1008,13 @@
 </head>
 <body>
 
+  <!-- App-Level Sync Overlay -->
+  <div id="globalAppLoader">
+    <div class="modal-crown-icon" style="animation: heartPulse 1.2s infinite ease-in-out;">👑</div>
+    <div style="color: var(--gold-light); font-family: var(--font-brand); letter-spacing: 1px; font-size: 0.95rem;">VERIFYING VIP ACCESS...</div>
+    <div class="fb-loader-spinner" style="width: 28px; height: 28px; border-width: 3px;"></div>
+  </div>
+
   <!-- Ambient glow auras & interactive particle canvas -->
   <div class="ambient-sphere aura-1"></div>
   <div class="ambient-sphere aura-2"></div>
@@ -1118,13 +1144,13 @@
 
   </div>
 
-  <!-- STEP 1: Luxury Welcome Name Modal -->
+  <!-- Welcome Name Modal -->
   <div id="welcomeNameModal" class="vip-modal-backdrop">
     <div class="modal-veil"></div>
     <div class="modal-frame-box">
       <div class="modal-crown-icon">👑</div>
       <h3 class="modal-main-title">Welcome</h3>
-      <p class="modal-paragraph">Please Enter Your Name</p>
+      <p class="modal-paragraph">Please Enter Your Name to Continue</p>
 
       <input type="text" id="userNameInput" class="fb-auth-input" placeholder="e.g. Riteek" autocomplete="off" />
       
@@ -1137,7 +1163,7 @@
     </div>
   </div>
 
-  <!-- 1. VIP Payment Modal -->
+  <!-- VIP Payment Modal -->
   <div id="paymentModal" class="vip-modal-backdrop">
     <div class="modal-veil" onclick="closePaymentModal()"></div>
     <div class="modal-frame-box">
@@ -1156,26 +1182,26 @@
       </div>
 
       <button id="btnRazorpayTrigger" class="btn-pay-master" onclick="initiateRazorpayPayment()">
-        <span>Pay with Razorpay / UPI</span>
+        <span>Pay ₹19 with Razorpay / UPI</span>
         <span>➔</span>
       </button>
 
-      <a href="https://rzp.io/rzp/RRcAtrZk" target="_blank" rel="noopener noreferrer" class="link-direct-pay" onclick="handleDirectLinkClick()">
-        Click here for Direct Payment Link (rzp.io)
+      <a href="javascript:void(0)" class="link-direct-pay" onclick="initiateRazorpayPayment()">
+        Fast Secure Checkout (UPI, Cards, NetBanking)
       </a>
 
-      <!-- UTR Manual Verification Fallback -->
+      <!-- UTR Reference Verification Panel -->
       <div class="utr-verify-panel">
-        <span class="utr-toggle-label" onclick="toggleUtrForm()">Already paid via UPI? Enter UTR / Verify</span>
+        <span class="utr-toggle-label" onclick="toggleUtrForm()">Already paid via UPI? Submit Reference</span>
         <div class="utr-form-wrap" id="utrForm">
-          <input type="text" id="utrNumberInput" class="utr-input" placeholder="Enter 12-digit UTR or Transaction ID" />
-          <button class="btn-utr-submit" onclick="verifyUtrSubmission()">Verify</button>
+          <input type="text" id="utrNumberInput" class="utr-input" placeholder="Enter 12-digit UTR Number" />
+          <button class="btn-utr-submit" onclick="submitManualUtrVerification()">Submit</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 2. VIP Success Modal -->
+  <!-- VIP Success Modal -->
   <div id="successModal" class="vip-modal-backdrop">
     <div class="modal-veil" onclick="closeSuccessModal()"></div>
     <div class="modal-frame-box">
@@ -1197,18 +1223,16 @@
     </div>
   </div>
 
-  <!-- 3. Lightbox Media Modal -->
+  <!-- Lightbox Media Modal -->
   <div id="lightboxModal" class="lightbox-screen-holder">
     <div class="lightbox-veil" onclick="closeLightbox()"></div>
     <button class="modal-dismiss-btn" style="position: absolute; top: 24px; right: 24px; z-index: 10002;" onclick="closeLightbox()">&times;</button>
     <div class="lightbox-enclosure" id="lightboxViewport"></div>
   </div>
 
-  <!-- ==================== MAIN JAVASCRIPT & FIREBASE INTEGRATION ==================== -->
+  <!-- ==================== MAIN JAVASCRIPT LOGIC ==================== -->
   <script>
-    /* =========================================================
-       FIREBASE CONFIGURATION & INITIALIZATION
-       ========================================================= */
+    // FIREBASE START
     const firebaseConfig = {
       apiKey: "AIzaSyAb6miiZZddxKCAZ7RVhzWbnoJTwx31hIU",
       authDomain: "jiyakumari-3d99c.firebaseapp.com",
@@ -1219,18 +1243,13 @@
       measurementId: "G-2R84J6BKD9"
     };
 
-    // Initialize Firebase
     if (!firebase.apps.length) {
       firebase.initializeApp(firebaseConfig);
     }
     const db = firebase.firestore();
 
-    /* =========================================================
-       APP CONSTANTS & DOM REFERENCES
-       ========================================================= */
     const RAZORPAY_KEY_ID = 'rzp_live_TdklEadv80vn89';
-    const RAZORPAY_AMOUNT_PAISE = 1900;
-    const DIRECT_PAYMENT_URL = 'https://rzp.io/rzp/RRcAtrZk';
+    const RAZORPAY_AMOUNT_PAISE = 1900; // Strictly ₹19.00
     const VIP_STORAGE_KEY = 'jiya_vip_unlocked';
     const USERNAME_STORAGE_KEY = 'username';
     const POSTS_STORAGE_KEY = 'jiya_custom_posts';
@@ -1251,6 +1270,7 @@
     const btnSubmitName = document.getElementById('btnSubmitName');
     const btnSubmitNameText = document.getElementById('btnSubmitNameText');
     const btnSubmitNameSpinner = document.getElementById('btnSubmitNameSpinner');
+    const globalAppLoader = document.getElementById('globalAppLoader');
 
     let isUserVip = false;
     let activeFilter = 'all';
@@ -1325,20 +1345,10 @@
       }
     ];
 
-    /* =========================================================
-       FIRESTORE PREMIUM AUTHENTICATION CORE FUNCTIONS
-       ========================================================= */
-
-    /**
-     * Sanitizes username string for use as a Firestore Document ID.
-     */
     function cleanUsernameKey(name) {
-      return (name || '').trim().replace(/[\/\#\?\[\]]/g, '');
+      return (name || '').trim().toLowerCase().replace(/[\/\#\?\[\]\.\s]/g, '_');
     }
 
-    /**
-     * Shows/hides loading state on Name Submit button
-     */
     function setNameSubmitLoading(isLoading) {
       if (isLoading) {
         btnSubmitNameText.style.display = 'none';
@@ -1351,9 +1361,6 @@
       }
     }
 
-    /**
-     * Displays greeting on Homepage Header
-     */
     function renderUserHeader(username, isVip) {
       if (username) {
         userGreetingBanner.classList.add('is-active');
@@ -1375,9 +1382,7 @@
       }
     }
 
-    /**
-     * Real-time verification of user premium status from Firestore
-     */
+    // FIRESTORE CHECK
     async function verifyFirestorePremium(username) {
       const docKey = cleanUsernameKey(username);
       if (!docKey) return false;
@@ -1388,38 +1393,33 @@
 
         if (docSnap.exists) {
           const data = docSnap.data();
-          if (data && data.premium === true) {
-            return true;
-          }
+          return data && data.premium === true;
         }
         return false;
       } catch (err) {
-        console.error("Firestore Premium Check Error:", err);
+        console.error("Firestore Verification Error:", err);
         throw err;
       }
     }
 
-    /**
-     * Creates or updates user record in Firestore after successful payment/verification
-     */
-    async function markUserPremiumInFirestore(username, paymentStatus = "success") {
+    async function recordUserPaymentInFirestore(username, paymentId, status = "success") {
       const docKey = cleanUsernameKey(username);
       if (!docKey) return;
 
       try {
         await db.collection("premiumUsers").doc(docKey).set({
+          name: username,
           premium: true,
-          paymentStatus: paymentStatus,
+          paymentStatus: status,
+          razorpayPaymentId: paymentId || "direct_verified",
+          amount: 19,
           updatedAt: firebase.firestore.FieldValue.serverTimestamp()
         }, { merge: true });
       } catch (err) {
-        console.error("Error writing to Firestore:", err);
+        console.error("Error committing premium state to Firestore:", err);
       }
     }
 
-    /**
-     * Opens Welcome Popup
-     */
     function openWelcomeModal(force = false) {
       fbWelcomeError.style.display = 'none';
       if (force && currentUsername) {
@@ -1430,17 +1430,11 @@
       setTimeout(() => userNameInput.focus(), 300);
     }
 
-    /**
-     * Closes Welcome Popup
-     */
     function closeWelcomeModal() {
       welcomeNameModal.classList.remove('is-open');
       document.body.style.overflow = '';
     }
 
-    /**
-     * Handles User Name Submission from Modal
-     */
     async function submitUserName() {
       const entered = userNameInput.value.trim();
       if (!entered) {
@@ -1455,40 +1449,138 @@
         currentUsername = entered;
         localStorage.setItem(USERNAME_STORAGE_KEY, currentUsername);
 
-        // Check Firestore database structure: premiumUsers/USERNAME
         const isPremium = await verifyFirestorePremium(currentUsername);
 
         if (isPremium) {
-          // STEP 5: Unlocks VIP completely
           localStorage.setItem(VIP_STORAGE_KEY, 'true');
-          syncVipState();
         } else {
-          // STEP 6: Keep locked
           localStorage.removeItem(VIP_STORAGE_KEY);
-          syncVipState();
         }
 
+        syncVipState();
         renderUserHeader(currentUsername, isPremium);
         setNameSubmitLoading(false);
         closeWelcomeModal();
       } catch (error) {
         setNameSubmitLoading(false);
-        // STEP 13: Connection Error Handling
         fbWelcomeError.textContent = "Connection Error. Please Try Again.";
         fbWelcomeError.style.display = 'block';
       }
     }
 
-    // Submit on Enter key in name field
     userNameInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        submitUserName();
-      }
+      if (e.key === 'Enter') submitUserName();
     });
 
-    /* =========================================================
-       GALLERY & UI LOGIC
-       ========================================================= */
+    // PREMIUM UNLOCK
+    function syncVipState() {
+      isUserVip = localStorage.getItem(VIP_STORAGE_KEY) === 'true';
+
+      if (isUserVip) {
+        navVipBadge.classList.add('unlocked');
+        navVipLabel.textContent = 'Premium Active';
+        if (heroUnlockBtn) {
+          heroUnlockBtn.innerHTML = '<span>👑 VIP Unlocked • Full Access</span>';
+          heroUnlockBtn.style.background = 'linear-gradient(135deg, #10b981, #06b6d4)';
+          heroUnlockBtn.style.color = '#042f2e';
+        }
+      } else {
+        navVipBadge.classList.remove('unlocked');
+        navVipLabel.textContent = 'VIP Pass ₹19';
+        if (heroUnlockBtn) {
+          heroUnlockBtn.innerHTML = '<span>⚡ Unlock VIP Content (₹19)</span>';
+          heroUnlockBtn.style.background = 'var(--gold-gradient)';
+          heroUnlockBtn.style.color = '#261300';
+        }
+      }
+      loadVaultContent();
+      renderUserHeader(currentUsername, isUserVip);
+    }
+
+    async function unlockVipAccess(paymentId = "") {
+      localStorage.setItem(VIP_STORAGE_KEY, 'true');
+      syncVipState();
+      closePaymentModal();
+
+      if (currentUsername) {
+        await recordUserPaymentInFirestore(currentUsername, paymentId, "success");
+      }
+
+      if (typeof confetti === 'function') {
+        confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+      }
+
+      setTimeout(() => openSuccessModal(), 400);
+    }
+
+    // PAYMENT SUCCESS
+    function initiateRazorpayPayment() {
+      if (!currentUsername) {
+        closePaymentModal();
+        openWelcomeModal();
+        return;
+      }
+
+      const options = {
+        key: RAZORPAY_KEY_ID,
+        amount: RAZORPAY_AMOUNT_PAISE,
+        currency: "INR",
+        name: "Jiya Kumari Premium",
+        description: "Lifetime VIP Pass (₹19.00)",
+        image: "1.png",
+        prefill: {
+          name: currentUsername
+        },
+        handler: function (response) {
+          if (response && response.razorpay_payment_id) {
+            unlockVipAccess(response.razorpay_payment_id);
+          } else {
+            alert("Payment signature missing. Contact support.");
+          }
+        },
+        theme: { color: "#ff2d75" }
+      };
+
+      try {
+        if (typeof Razorpay === 'function') {
+          const rzpInstance = new Razorpay(options);
+          rzpInstance.open();
+        } else {
+          alert("Payment gateway is loading. Please verify internet connectivity.");
+        }
+      } catch (e) {
+        alert("Payment initialization error. Please try again.");
+      }
+    }
+
+    function toggleUtrForm() {
+      document.getElementById('utrForm').classList.toggle('is-visible');
+    }
+
+    async function submitManualUtrVerification() {
+      const val = document.getElementById('utrNumberInput').value.trim();
+      if (val.length < 8) {
+        alert('Please enter a valid 12-digit UPI UTR or Transaction reference number.');
+        return;
+      }
+      
+      const docKey = cleanUsernameKey(currentUsername);
+      if (docKey) {
+        try {
+          await db.collection("utrSubmissions").add({
+            username: currentUsername,
+            utr: val,
+            submittedAt: firebase.firestore.FieldValue.serverTimestamp(),
+            status: "pending_verification"
+          });
+          alert("UTR received! It will be verified manually by the admin team.");
+          document.getElementById('utrNumberInput').value = "";
+          toggleUtrForm();
+        } catch(e) {
+          alert("Could not submit UTR at this time. Please try again.");
+        }
+      }
+    }
 
     function loadVaultContent() {
       isUserVip = localStorage.getItem(VIP_STORAGE_KEY) === 'true';
@@ -1496,11 +1588,7 @@
       let items = [];
       const stored = localStorage.getItem(POSTS_STORAGE_KEY);
       if (stored) {
-        try {
-          items = JSON.parse(stored);
-        } catch (e) {
-          items = [];
-        }
+        try { items = JSON.parse(stored); } catch (e) { items = []; }
       }
 
       if (!items || items.length === 0) {
@@ -1580,111 +1668,6 @@
       }).join('');
     }
 
-    function syncVipState() {
-      isUserVip = localStorage.getItem(VIP_STORAGE_KEY) === 'true';
-
-      if (isUserVip) {
-        navVipBadge.classList.add('unlocked');
-        navVipLabel.textContent = 'VIP Pass Active';
-        if (heroUnlockBtn) {
-          heroUnlockBtn.innerHTML = '<span>👑 VIP Unlocked • Full Access</span>';
-          heroUnlockBtn.style.background = 'linear-gradient(135deg, #10b981, #06b6d4)';
-          heroUnlockBtn.style.color = '#042f2e';
-        }
-      } else {
-        navVipBadge.classList.remove('unlocked');
-        navVipLabel.textContent = 'VIP Pass ₹19';
-        if (heroUnlockBtn) {
-          heroUnlockBtn.innerHTML = '<span>⚡ Unlock VIP Content (₹19)</span>';
-          heroUnlockBtn.style.background = 'var(--gold-gradient)';
-          heroUnlockBtn.style.color = '#261300';
-        }
-      }
-      loadVaultContent();
-      renderUserHeader(currentUsername, isUserVip);
-    }
-
-    /**
-     * Unlocks VIP in local state and pushes update to Firestore
-     */
-    async function unlockVipAccess(showSuccessPopup = true) {
-      localStorage.setItem(VIP_STORAGE_KEY, 'true');
-      syncVipState();
-      closePaymentModal();
-
-      // Update Firestore for current user
-      if (currentUsername) {
-        await markUserPremiumInFirestore(currentUsername, "success");
-      }
-
-      if (typeof confetti === 'function') {
-        confetti({
-          particleCount: 120,
-          spread: 80,
-          origin: { y: 0.6 }
-        });
-      }
-
-      if (showSuccessPopup) {
-        setTimeout(() => openSuccessModal(), 400);
-      }
-    }
-
-    function initiateRazorpayPayment() {
-      const options = {
-        key: RAZORPAY_KEY_ID,
-        amount: RAZORPAY_AMOUNT_PAISE,
-        currency: "INR",
-        name: "Jiya Kumari Premium",
-        description: "Lifetime VIP Media Access & Telegram Channel",
-        image: "1.png",
-        prefill: {
-          name: currentUsername || ""
-        },
-        handler: function (response) {
-          if (response && response.razorpay_payment_id) {
-            unlockVipAccess(true);
-          }
-        },
-        theme: { color: "#ff2d75" }
-      };
-
-      try {
-        if (typeof Razorpay === 'function') {
-          const rzpInstance = new Razorpay(options);
-          rzpInstance.on('payment.failed', () => {
-            window.location.href = DIRECT_PAYMENT_URL;
-          });
-          rzpInstance.open();
-        } else {
-          window.location.href = DIRECT_PAYMENT_URL;
-        }
-      } catch (e) {
-        window.location.href = DIRECT_PAYMENT_URL;
-      }
-    }
-
-    function handleDirectLinkClick() {
-      setTimeout(() => {
-        closePaymentModal();
-        openSuccessModal();
-      }, 2500);
-    }
-
-    function toggleUtrForm() {
-      const form = document.getElementById('utrForm');
-      form.classList.toggle('is-visible');
-    }
-
-    function verifyUtrSubmission() {
-      const val = document.getElementById('utrNumberInput').value.trim();
-      if (val.length >= 8) {
-        unlockVipAccess(true);
-      } else {
-        alert('Please enter a valid 12-digit UPI UTR or Transaction reference number.');
-      }
-    }
-
     function openPaymentModal() {
       if (localStorage.getItem(VIP_STORAGE_KEY) === 'true') {
         openSuccessModal();
@@ -1749,14 +1732,14 @@
     function resetVipStatusForTesting() {
       localStorage.removeItem(VIP_STORAGE_KEY);
       syncVipState();
-      alert('VIP Pass has been reset. Gallery blur is now re-enabled for testing.');
+      alert('VIP Pass reset. Gallery is locked.');
     }
 
     function escapeString(str) {
       return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    /* Ambient Sparkle Particle Canvas */
+    // Particle Canvas Animation
     const canvas = document.getElementById('sparkleCanvas');
     const ctx = canvas.getContext('2d');
 
@@ -1794,25 +1777,16 @@
     }
     animateParticles();
 
-    /* =========================================================
-       INITIALIZATION & APP STARTUP
-       ========================================================= */
+    // App Initialization
     window.addEventListener('DOMContentLoaded', async () => {
-      syncVipState();
-
-      // Read username from localStorage
       currentUsername = localStorage.getItem(USERNAME_STORAGE_KEY) || '';
 
       if (!currentUsername) {
-        // STEP 1: Show luxury premium popup if no name found
-        setTimeout(() => {
-          openWelcomeModal();
-        }, 500);
+        globalAppLoader.classList.add('hidden');
+        syncVipState();
+        setTimeout(() => openWelcomeModal(), 500);
       } else {
-        // Render header greeting immediately
-        renderUserHeader(currentUsername, isUserVip);
-
-        // STEP 9: Check Firestore again on reload
+        renderUserHeader(currentUsername, false);
         try {
           const hasFirestorePremium = await verifyFirestorePremium(currentUsername);
           if (hasFirestorePremium) {
@@ -1820,12 +1794,15 @@
           } else {
             localStorage.removeItem(VIP_STORAGE_KEY);
           }
-          syncVipState();
         } catch (e) {
-          console.warn("Offline or failed initial Firestore sync. Retaining existing session state.");
+          console.warn("Firestore verify failure on startup:", e);
+        } finally {
+          syncVipState();
+          globalAppLoader.classList.add('hidden');
         }
       }
     });
+    // FIREBASE END
   </script>
 </body>
 </html>
