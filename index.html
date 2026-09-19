@@ -3,34 +3,44 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Jiya Kumari ✨ Official Exclusive VIP</title>
-  <meta name="theme-color" content="#06020a" />
+  <title>Jiya Kumari Premium ✨ | Exclusive VIP Portal</title>
+  <meta name="description" content="Official exclusive VIP portal of Jiya Kumari. Access private photo galleries, personal video reels, and direct VIP Telegram access." />
+  <meta name="theme-color" content="#0a0414" />
 
-  <!-- Premium Fonts -->
+  <!-- Google Fonts: Luxury Serif, Modern Sans & Romantic Script -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Great+Vibes&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,800;1,600&display=swap" rel="stylesheet" />
 
-  <!-- Canvas Confetti for Celebration FX -->
+  <!-- External libraries: Razorpay Checkout SDK & Canvas Confetti -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
   <style>
     :root {
-      --bg-dark: #07020d;
-      --bg-card: rgba(26, 12, 42, 0.72);
-      --border-glass: rgba(255, 255, 255, 0.14);
-      --gold-primary: #f59e0b;
+      --bg-dark: #0a0414;
+      --bg-card: rgba(22, 10, 36, 0.72);
+      --bg-card-hover: rgba(35, 16, 56, 0.88);
+      --border-glass: rgba(255, 255, 255, 0.12);
+      --border-glow: rgba(255, 45, 117, 0.35);
+      --border-gold: rgba(245, 158, 11, 0.45);
+      --primary-rose: #ff2d75;
+      --soft-pink: #ff85af;
+      --electric-orchid: #a855f7;
+      --deep-violet: #6b21a8;
+      --champagne-gold: #f59e0b;
       --gold-light: #fde68a;
-      --gold-gradient: linear-gradient(135deg, #ffd700 0%, #f59e0b 50%, #d97706 100%);
-      --pink-rose: #ff2a70;
-      --pink-gradient: linear-gradient(135deg, #ff2a70 0%, #d946ef 50%, #8b5cf6 100%);
+      --gold-gradient: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%);
+      --rose-gradient: linear-gradient(135deg, #ff2d75 0%, #d946ef 50%, #9333ea 100%);
       --text-main: #ffffff;
-      --text-muted: #cbb4db;
+      --text-muted: #bda7d4;
+      --shadow-luxury: 0 25px 60px -15px rgba(0, 0, 0, 0.85), 0 0 35px rgba(255, 45, 117, 0.2);
+      --shadow-gold: 0 10px 30px rgba(245, 158, 11, 0.35);
       --font-body: 'Plus Jakarta Sans', sans-serif;
       --font-serif: 'Playfair Display', serif;
       --font-brand: 'Cinzel', serif;
       --font-script: 'Great Vibes', cursive;
-      --shadow-lux: 0 20px 50px rgba(0,0,0,0.85), 0 0 40px rgba(255, 42, 112, 0.25);
+      --transition-smooth: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     * {
@@ -40,641 +50,1393 @@
       -webkit-tap-highlight-color: transparent;
     }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
+      font-family: var(--font-body);
       background-color: var(--bg-dark);
       background-image: 
-        radial-gradient(circle at 20% 10%, rgba(255, 42, 112, 0.22) 0%, transparent 45%),
-        radial-gradient(circle at 80% 30%, rgba(139, 92, 246, 0.22) 0%, transparent 50%),
-        radial-gradient(circle at 50% 80%, rgba(245, 158, 11, 0.12) 0%, transparent 55%),
-        linear-gradient(180deg, #0f031b 0%, #050109 100%);
+        radial-gradient(circle at 15% 15%, rgba(255, 45, 117, 0.18) 0%, transparent 40%),
+        radial-gradient(circle at 85% 35%, rgba(168, 85, 247, 0.2) 0%, transparent 45%),
+        radial-gradient(circle at 50% 85%, rgba(245, 158, 11, 0.1) 0%, transparent 50%),
+        linear-gradient(180deg, #100620 0%, #080210 100%);
       background-attachment: fixed;
       color: var(--text-main);
-      font-family: var(--font-body);
       min-height: 100vh;
       overflow-x: hidden;
+      position: relative;
+    }
+
+    .ambient-sphere {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(140px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.55;
+      animation: floatAura 12s infinite alternate ease-in-out;
+    }
+    .aura-1 { top: -10%; left: -10%; width: 480px; height: 480px; background: var(--primary-rose); }
+    .aura-2 { top: 45%; right: -12%; width: 520px; height: 520px; background: var(--electric-orchid); animation-delay: -5s; }
+
+    @keyframes floatAura {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(45px, 50px) scale(1.18); }
     }
 
     #sparkleCanvas {
       position: fixed;
       inset: 0;
+      width: 100%;
+      height: 100%;
       pointer-events: none;
       z-index: 1;
     }
 
-    .app-container {
+    .main-wrap {
       position: relative;
       z-index: 2;
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 12px 16px 90px;
+      padding: 0 16px 80px;
     }
 
-    /* Floating Alert Ribbon */
-    .sale-ribbon {
-      background: linear-gradient(90deg, #ff2a70, #9333ea, #f59e0b);
-      color: #fff;
-      text-align: center;
-      padding: 8px 12px;
-      font-size: 0.8rem;
-      font-weight: 800;
-      border-radius: 40px;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 6px 20px rgba(255, 42, 112, 0.4);
-      animation: pulseGlow 2s infinite alternate;
-    }
-    @keyframes pulseGlow {
-      from { box-shadow: 0 4px 15px rgba(255, 42, 112, 0.3); }
-      to { box-shadow: 0 6px 30px rgba(245, 158, 11, 0.6); }
-    }
-
-    /* Navigation */
-    .vip-header {
-      background: rgba(22, 10, 36, 0.75);
-      backdrop-filter: blur(25px);
-      -webkit-backdrop-filter: blur(25px);
+    header.vip-navbar {
+      position: sticky;
+      top: 14px;
+      z-index: 100;
+      background: rgba(18, 8, 30, 0.78);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--border-glass);
       border-radius: 50px;
-      padding: 10px 18px;
+      padding: 10px 20px;
+      margin-bottom: 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 24px;
-    }
-    .brand-title {
-      font-family: var(--font-brand);
-      font-weight: 900;
-      font-size: 1.1rem;
-      color: #ffffff;
-      letter-spacing: 1px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
     }
 
-    .btn-vip-pass {
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: #fff;
+    }
+    .crown-circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
       background: var(--gold-gradient);
-      color: #210d00;
-      border: none;
-      padding: 8px 18px;
-      border-radius: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.05rem;
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.6);
+    }
+    .brand-title-text {
+      font-family: var(--font-brand);
+      font-size: 1.12rem;
       font-weight: 800;
-      font-size: 0.82rem;
-      cursor: pointer;
-      box-shadow: 0 5px 20px rgba(245, 158, 11, 0.4);
+      letter-spacing: 1px;
+      background: linear-gradient(135deg, #ffffff 40%, var(--soft-pink) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .vip-badge-btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      transition: 0.3s transform;
+      gap: 8px;
+      padding: 7px 16px;
+      border-radius: 50px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid var(--border-gold);
+      color: var(--gold-light);
+      font-size: 0.8rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: var(--transition-smooth);
     }
-    .btn-vip-pass:active { transform: scale(0.95); }
-
-    /* Profile Hero Card */
-    .profile-card {
-      background: var(--bg-card);
-      backdrop-filter: blur(20px);
-      border: 1.5px solid var(--border-glass);
-      border-radius: 32px;
-      padding: 30px 20px;
-      text-align: center;
-      max-width: 680px;
-      margin: 0 auto 36px;
-      box-shadow: var(--shadow-lux);
-      position: relative;
-    }
-
-    /* 1024x1024 Profile Picture */
-    .avatar-wrapper {
-      position: relative;
-      width: 140px;
-      height: 140px;
-      margin: 0 auto 16px;
+    .vip-badge-btn .pulse-indicator {
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      padding: 4px;
-      background: var(--gold-gradient);
-      box-shadow: 0 0 35px rgba(255, 42, 112, 0.45);
+      background: var(--primary-rose);
+      box-shadow: 0 0 10px var(--primary-rose);
+      animation: pulseDot 1.4s infinite;
     }
-    .avatar-img {
+    .vip-badge-btn.unlocked {
+      background: rgba(16, 185, 129, 0.15);
+      border-color: #10b981;
+      color: #6ee7b7;
+    }
+    .vip-badge-btn.unlocked .pulse-indicator {
+      background: #10b981;
+      box-shadow: 0 0 10px #10b981;
+    }
+
+    .btn-admin-link {
+      padding: 7px 14px;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--border-glass);
+      color: #ffffff;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: var(--transition-smooth);
+    }
+    .btn-admin-link:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: var(--primary-rose);
+      color: #fff;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.4); opacity: 0.45; }
+    }
+
+    .hero-section {
+      padding: 20px 0 35px;
+      text-align: center;
+    }
+    .hero-pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 20px;
+      border-radius: 30px;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid var(--border-gold);
+      color: var(--gold-light);
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 20px;
+      box-shadow: 0 5px 20px rgba(245, 158, 11, 0.15);
+    }
+    .hero-main-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.3rem, 6.8vw, 4.4rem);
+      line-height: 1.14;
+      margin-bottom: 15px;
+      color: #ffffff;
+    }
+    .hero-main-title .script-highlight {
+      font-family: var(--font-script);
+      font-size: 1.4em;
+      background: linear-gradient(45deg, var(--primary-rose), #ec4899, var(--champagne-gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+      filter: drop-shadow(0 6px 20px rgba(255, 45, 117, 0.4));
+    }
+    .hero-subtitle {
+      font-size: clamp(0.98rem, 2.7vw, 1.22rem);
+      color: var(--text-muted);
+      max-width: 650px;
+      margin: 0 auto 35px;
+      line-height: 1.65;
+    }
+
+    .profile-card-glass {
+      background: var(--bg-card);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1.5px solid var(--border-glass);
+      border-radius: 34px;
+      padding: 34px 24px;
+      max-width: 780px;
+      margin: 0 auto 45px;
+      box-shadow: var(--shadow-luxury);
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition-smooth);
+    }
+    .profile-card-glass:hover {
+      border-color: rgba(255, 45, 117, 0.4);
+    }
+    .profile-avatar-box {
+      position: relative;
+      width: 124px;
+      height: 124px;
+      margin: 0 auto 18px;
+    }
+    .profile-avatar-img {
       width: 100%;
       height: 100%;
-      aspect-ratio: 1 / 1;
-      object-fit: cover;
       border-radius: 50%;
-      background: #1a082b;
-      display: block;
+      object-fit: cover;
+      border: 3.5px solid rgba(245, 158, 11, 0.85);
+      box-shadow: 0 0 30px rgba(255, 45, 117, 0.45);
+      background: #200d30;
     }
-    .verified-tick {
+    .verified-checkmark {
       position: absolute;
-      bottom: 6px;
-      right: 6px;
+      bottom: 4px;
+      right: 4px;
+      width: 30px;
+      height: 30px;
       background: #10b981;
-      color: #fff;
-      width: 28px;
-      height: 28px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.9rem;
-      border: 3px solid #07020d;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-    }
-
-    .creator-name {
-      font-family: var(--font-serif);
-      font-size: 2rem;
-      font-weight: 800;
-      margin-bottom: 4px;
-    }
-    .user-welcome-text {
-      color: var(--gold-light);
-      font-size: 0.95rem;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-
-    /* Live Counters */
-    .stats-tray {
-      display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin: 18px auto;
-      max-width: 440px;
-    }
-    .stat-pill {
-      flex: 1;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 18px;
-      padding: 10px 8px;
-    }
-    .stat-pill strong {
-      display: block;
-      font-size: 1.15rem;
+      border: 3px solid var(--bg-dark);
       color: #fff;
+      font-size: 0.95rem;
+      font-weight: 900;
+      box-shadow: 0 2px 10px rgba(16, 185, 129, 0.5);
     }
-    .stat-pill span {
-      font-size: 0.72rem;
-      color: var(--text-muted);
-      text-transform: uppercase;
+    .profile-name {
+      font-family: var(--font-serif);
+      font-size: 1.85rem;
       font-weight: 700;
+      color: #fff;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .profile-handle-tag {
+      font-size: 0.9rem;
+      color: var(--soft-pink);
+      font-weight: 600;
+      margin-bottom: 18px;
       letter-spacing: 0.5px;
     }
 
-    .hero-cta-btn {
+    .profile-stats-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 26px;
       width: 100%;
-      max-width: 440px;
-      padding: 16px;
-      border-radius: 50px;
-      background: var(--pink-gradient);
-      color: #fff;
-      font-weight: 900;
-      font-size: 1.05rem;
-      border: none;
-      cursor: pointer;
-      box-shadow: 0 10px 30px rgba(255, 42, 112, 0.5);
-      transition: 0.3s all;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+      padding: 14px 18px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .stat-box {
+      flex: 1;
+      text-align: center;
+    }
+    .stat-val {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #ffffff;
+      display: block;
+    }
+    .stat-desc {
+      font-size: 0.74rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      font-weight: 700;
+    }
+
+    .profile-buttons-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      width: 100%;
+    }
+    .btn-action-pill {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      animation: gentleShake 3.5s infinite ease-in-out;
+      gap: 9px;
+      padding: 14px 24px;
+      border-radius: 50px;
+      font-size: 0.94rem;
+      font-weight: 800;
+      text-decoration: none;
+      transition: var(--transition-smooth);
+      border: none;
+      cursor: pointer;
     }
-    @keyframes gentleShake {
-      0%, 85%, 100% { transform: scale(1); }
-      90% { transform: scale(1.03) rotate(-1deg); }
-      95% { transform: scale(1.03) rotate(1deg); }
+    .btn-action-pill:hover {
+      transform: translateY(-3px);
+    }
+    .btn-fb-official {
+      background: #1877f2;
+      color: #ffffff;
+      box-shadow: 0 10px 25px rgba(24, 119, 242, 0.35);
+    }
+    .btn-tg-official {
+      background: linear-gradient(135deg, #0088cc 0%, #00b4d8 100%);
+      color: #ffffff;
+      box-shadow: 0 10px 25px rgba(0, 136, 204, 0.35);
+    }
+    .btn-unlock-gold {
+      background: var(--gold-gradient);
+      color: #261300;
+      box-shadow: var(--shadow-gold);
     }
 
-    /* A4 Size Content Grid (1 : 1.414 aspect ratio) */
-    .section-title {
-      font-family: var(--font-serif);
-      font-size: 1.8rem;
+    .section-kicker-center {
       text-align: center;
+      margin-bottom: 26px;
+    }
+    .kicker-sub {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: var(--primary-rose);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      display: block;
       margin-bottom: 6px;
     }
-    .section-sub {
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.85rem;
-      margin-bottom: 24px;
+    .kicker-heading {
+      font-family: var(--font-serif);
+      font-size: clamp(1.85rem, 5vw, 2.75rem);
+      color: #ffffff;
     }
 
-    .gallery-grid {
+    .gallery-filter-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 32px;
+    }
+    .filter-btn-tab {
+      padding: 10px 22px;
+      border-radius: 40px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text-muted);
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+    .filter-btn-tab.active, .filter-btn-tab:hover {
+      background: var(--rose-gradient);
+      color: #ffffff;
+      border-color: transparent;
+      box-shadow: 0 8px 25px rgba(255, 45, 117, 0.4);
+    }
+
+    .gallery-layout-grid {
       display: grid;
       grid-template-columns: repeat(1, 1fr);
-      gap: 20px;
+      gap: 22px;
+      margin-bottom: 60px;
     }
-    @media (min-width: 600px) {
-      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    @media (min-width: 580px) {
+      .gallery-layout-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
-    @media (min-width: 900px) {
-      .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+    @media (min-width: 992px) {
+      .gallery-layout-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 26px;
+      }
     }
 
-    .a4-card {
+    .media-vault-card {
       background: var(--bg-card);
       border: 1px solid var(--border-glass);
-      border-radius: 22px;
+      border-radius: 26px;
       overflow: hidden;
       position: relative;
-      box-shadow: var(--shadow-lux);
+      box-shadow: var(--shadow-luxury);
+      transition: var(--transition-smooth);
+      display: flex;
+      flex-direction: column;
     }
-    
-    /* A4 Ratio Container (Width : Height = 1 : 1.414) */
-    .a4-media-frame {
+    .media-vault-card:hover {
+      transform: translateY(-8px);
+      border-color: rgba(255, 45, 117, 0.45);
+      box-shadow: 0 25px 50px rgba(255, 45, 117, 0.25);
+    }
+
+    .card-preview-viewport {
+      position: relative;
       width: 100%;
-      aspect-ratio: 1 / 1.414;
-      position: relative;
+      aspect-ratio: 4 / 5.2;
       overflow: hidden;
-      background: #12071f;
+      background: #1a0b2a;
     }
-    .a4-media-frame img,
-    .a4-media-frame video {
+    .card-preview-viewport img,
+    .card-preview-viewport video {
       width: 100%;
       height: 100%;
       object-fit: cover;
       display: block;
-      transition: transform 0.6s ease;
+      transition: transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .media-vault-card:hover .card-preview-viewport img,
+    .media-vault-card:hover .card-preview-viewport video {
+      transform: scale(1.06);
     }
 
-    /* Locked Blur Shield */
-    .is-locked .a4-media-frame img,
-    .is-locked .a4-media-frame video {
-      filter: blur(28px) brightness(0.6);
+    .media-vault-card.is-locked .card-preview-viewport img,
+    .media-vault-card.is-locked .card-preview-viewport video {
+      filter: blur(24px) brightness(0.65) contrast(1.1);
       transform: scale(1.15);
       user-select: none;
       pointer-events: none;
     }
 
-    .lock-banner-overlay {
+    .blur-shield-overlay {
       position: absolute;
       inset: 0;
+      background: linear-gradient(180deg, rgba(16, 6, 28, 0.35) 0%, rgba(10, 4, 20, 0.92) 100%);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      background: rgba(10, 3, 18, 0.65);
-      padding: 16px;
+      gap: 14px;
+      padding: 24px;
       text-align: center;
       cursor: pointer;
-      z-index: 5;
+      z-index: 10;
+      transition: var(--transition-smooth);
     }
-    .media-unlocked .lock-banner-overlay { display: none; }
-    .media-unlocked .a4-media-frame img,
-    .media-unlocked .a4-media-frame video { filter: none !important; transform: none !important; }
+    .media-vault-card:not(.is-locked) .blur-shield-overlay {
+      display: none !important;
+    }
 
-    .lock-circle {
+    .lock-shield-bubble {
       width: 60px;
       height: 60px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(12px);
+      border: 1.5px solid var(--gold-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      color: var(--champagne-gold);
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.6);
+      animation: heartPulse 2.2s infinite ease-in-out;
+    }
+    .lock-card-title {
+      font-family: var(--font-brand);
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+    .lock-card-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 18px;
+      border-radius: 30px;
+      background: var(--gold-gradient);
+      color: #291400;
+      font-size: 0.86rem;
+      font-weight: 900;
+      box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+    }
+
+    .card-meta-details {
+      padding: 16px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .card-headings-col h4 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin-bottom: 3px;
+    }
+    .card-headings-col span {
+      font-size: 0.78rem;
+      color: var(--soft-pink);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 700;
+    }
+    .badge-kind-tag {
+      padding: 4px 11px;
+      border-radius: 10px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--text-muted);
+    }
+
+    .btn-card-unlocked {
+      display: none;
+      width: calc(100% - 28px);
+      margin: 0 14px 14px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      border-radius: 14px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+    .media-vault-card:not(.is-locked) .btn-card-unlocked {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+    .btn-card-unlocked:hover {
+      background: var(--rose-gradient);
+      border-color: transparent;
+      box-shadow: 0 8px 25px rgba(255, 45, 117, 0.4);
+    }
+
+    .vip-modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.35s ease, visibility 0.35s ease;
+    }
+    .vip-modal-backdrop.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+    .modal-veil {
+      position: absolute;
+      inset: 0;
+      background: rgba(8, 2, 16, 0.9);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+    }
+    .modal-frame-box {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 450px;
+      background: #190a2a;
+      border: 1.5px solid var(--border-gold);
+      border-radius: 32px;
+      padding: 32px 26px;
+      text-align: center;
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9), 0 0 35px rgba(255, 45, 117, 0.3);
+      animation: modalPop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalPop {
+      0% { transform: scale(0.9) translateY(20px); opacity: 0; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+
+    .modal-dismiss-btn {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1.3rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition-smooth);
+    }
+    .modal-dismiss-btn:hover {
+      background: var(--primary-rose);
+      transform: rotate(90deg);
+    }
+
+    .modal-crown-icon {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 16px;
       border-radius: 50%;
       background: var(--gold-gradient);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
-      margin-bottom: 12px;
-      box-shadow: 0 0 25px rgba(245, 158, 11, 0.6);
-      color: #000;
+      font-size: 2.2rem;
+      box-shadow: 0 0 35px rgba(245, 158, 11, 0.6);
     }
-    .lock-pill-badge {
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(10px);
-      padding: 6px 14px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: 800;
-      color: #fff;
-      border: 1px solid rgba(255,255,255,0.25);
+    .modal-main-title {
+      font-family: var(--font-serif);
+      font-size: 1.7rem;
+      color: #ffffff;
+      margin-bottom: 6px;
+    }
+    .modal-paragraph {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 22px;
     }
 
-    .card-footer-info {
-      padding: 14px 16px;
+    .pricing-display-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1.5px dashed rgba(245, 158, 11, 0.45);
+      border-radius: 20px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
-    .card-footer-info h4 {
-      font-size: 0.95rem;
-      color: #fff;
+    .price-text-col {
+      text-align: left;
     }
-    .card-footer-info span {
-      font-size: 0.75rem;
-      color: var(--gold-light);
-      font-weight: 700;
+    .price-text-col span {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--soft-pink);
+      text-transform: uppercase;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+    .price-text-col strong {
+      font-size: 1.05rem;
+      color: #ffffff;
+    }
+    .price-big-number {
+      font-family: var(--font-brand);
+      font-size: 2.1rem;
+      font-weight: 900;
+      color: var(--champagne-gold);
     }
 
-    /* Modal Backdrop */
-    .vip-modal {
+    .btn-pay-master {
+      width: 100%;
+      padding: 16px;
+      border-radius: 50px;
+      background: var(--gold-gradient);
+      color: #271300;
+      font-size: 1.08rem;
+      font-weight: 900;
+      border: none;
+      cursor: pointer;
+      box-shadow: var(--shadow-gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: var(--transition-smooth);
+    }
+    .btn-pay-master:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 12px 35px rgba(245, 158, 11, 0.5);
+    }
+
+    .link-direct-pay {
+      display: inline-block;
+      font-size: 0.84rem;
+      color: var(--soft-pink);
+      text-decoration: underline;
+      cursor: pointer;
+      margin-top: 14px;
+      transition: var(--transition-smooth);
+    }
+    .link-direct-pay:hover {
+      color: #ffffff;
+    }
+
+    .utr-verify-panel {
+      margin-top: 20px;
+      padding-top: 16px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: center;
+    }
+    .utr-toggle-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    .utr-form-wrap {
+      display: none;
+      margin-top: 12px;
+      gap: 8px;
+    }
+    .utr-form-wrap.is-visible {
+      display: flex;
+    }
+    .utr-input {
+      flex: 1;
+      padding: 10px 14px;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid var(--border-glass);
+      color: #fff;
+      font-size: 0.85rem;
+      outline: none;
+    }
+    .btn-utr-submit {
+      padding: 10px 16px;
+      border-radius: 30px;
+      background: #10b981;
+      color: #fff;
+      border: none;
+      font-weight: 800;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    .lightbox-screen-holder {
       position: fixed;
       inset: 0;
-      background: rgba(5, 1, 10, 0.88);
-      backdrop-filter: blur(15px);
+      z-index: 100000;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 16px;
-      z-index: 9999;
       opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.35s ease;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
     }
-    .vip-modal.active {
+    .lightbox-screen-holder.is-visible {
       opacity: 1;
-      pointer-events: all;
+      visibility: visible;
     }
-    .modal-box {
-      background: #180829;
-      border: 1.5px solid var(--border-glass);
-      border-radius: 28px;
-      padding: 28px 22px;
-      max-width: 420px;
-      width: 100%;
-      text-align: center;
-      box-shadow: var(--shadow-lux);
+    .lightbox-veil {
+      position: absolute;
+      inset: 0;
+      background: rgba(5, 2, 10, 0.95);
+      backdrop-filter: blur(20px);
     }
-
-    .name-input-field {
-      width: 100%;
-      padding: 14px 18px;
-      border-radius: 40px;
-      background: rgba(255, 255, 255, 0.08);
-      border: 1.5px solid var(--gold-primary);
-      color: #fff;
-      font-size: 1rem;
-      outline: none;
-      margin: 18px 0;
-      text-align: center;
-    }
-
-    /* Live Fake Sales Toast */
-    .live-toast {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: rgba(20, 8, 32, 0.92);
-      border: 1px solid var(--gold-primary);
-      backdrop-filter: blur(12px);
-      border-radius: 40px;
-      padding: 8px 16px;
-      font-size: 0.78rem;
-      color: #fff;
+    .lightbox-enclosure {
+      position: relative;
+      z-index: 10;
+      max-width: 92vw;
+      max-height: 88vh;
+      border-radius: 26px;
+      overflow: hidden;
+      box-shadow: 0 35px 90px rgba(0, 0, 0, 0.95);
+      background: #000000;
       display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border-gold);
+    }
+    .lightbox-enclosure img,
+    .lightbox-enclosure video {
+      max-width: 100%;
+      max-height: 80vh;
+      object-fit: contain;
+    }
+
+    footer.luxury-footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 45px 16px 20px;
+      margin-top: 50px;
+      text-align: center;
+    }
+    .trust-grid-pills {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 16px;
+      margin-bottom: 26px;
+    }
+    .trust-pill-item {
+      display: inline-flex;
       align-items: center;
       gap: 8px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-      z-index: 100;
-      transform: translateY(120px);
-      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      padding: 9px 18px;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.09);
+      font-size: 0.8rem;
+      color: var(--text-muted);
     }
-    .live-toast.show { transform: translateY(0); }
+    .footer-credit-text {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .reset-test-pill {
+      background: transparent;
+      border: 1px dashed rgba(255, 255, 255, 0.25);
+      color: var(--text-muted);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+    .reset-test-pill:hover {
+      border-color: var(--primary-rose);
+      color: #fff;
+    }
+
+    @keyframes heartPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
   </style>
 </head>
 <body>
 
+  <!-- Ambient glow auras & interactive particle canvas -->
+  <div class="ambient-sphere aura-1"></div>
+  <div class="ambient-sphere aura-2"></div>
   <canvas id="sparkleCanvas"></canvas>
 
-  <!-- Live User Toast Notification -->
-  <div class="live-toast" id="liveToast">
-    <span>🔥</span>
-    <span id="toastMsg">Rahul from Delhi just unlocked VIP Pass!</span>
-  </div>
+  <div class="main-wrap">
 
-  <!-- 1. NAME ENTRANCE MODAL (Opens immediately on load) -->
-  <div class="vip-modal active" id="nameModal">
-    <div class="modal-box">
-      <div style="font-size: 2.8rem; margin-bottom: 8px;">👑</div>
-      <h3 style="font-family: var(--font-serif); font-size: 1.6rem;">Special VIP Access</h3>
-      <p style="color: var(--text-muted); font-size: 0.86rem; margin-top: 6px;">
-        Jiya Kumari has a special private offer for you. Enter your name to view:
-      </p>
-      <input type="text" id="userNameInput" class="name-input-field" placeholder="Enter Your Name..." maxlength="25" />
-      <button class="hero-cta-btn" onclick="submitUserName()">
-        <span>Continue to VIP Lounge</span>
-        <span>➔</span>
-      </button>
-    </div>
-  </div>
-
-  <!-- 2. PAYMENT / SUBSCRIPTION MODAL -->
-  <div class="vip-modal" id="paymentModal">
-    <div class="modal-box" style="position: relative;">
-      <button onclick="closeModal('paymentModal')" style="position: absolute; right: 16px; top: 16px; background: none; border: none; color: #fff; font-size: 1.4rem; cursor: pointer;">✕</button>
-      <div style="font-size: 2.6rem;">💎</div>
-      <h3 style="font-family: var(--font-serif); font-size: 1.5rem; margin-top: 6px;" id="modalPersonalHeader">Unlock VIP Pass</h3>
-      <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;">Get instant access to all A4 Photos, HD Reels & Telegram Group.</p>
-
-      <div style="background: rgba(255,255,255,0.06); border: 1px dashed var(--gold-primary); border-radius: 20px; padding: 14px; margin: 18px 0; display: flex; align-items: center; justify-content: space-between;">
-        <div style="text-align: left;">
-          <div style="color: var(--gold-light); font-size: 0.72rem; font-weight: 800;">LIFETIME ACCESS</div>
-          <div style="color: #fff; font-weight: 700;">VIP Subscription</div>
-        </div>
-        <div style="font-size: 1.8rem; font-weight: 900; color: var(--gold-primary);">₹19</div>
-      </div>
-
-      <!-- Replace the link below with your actual UPI/Razorpay payment link -->
-      <a href="https://rzp.io/rzp/RRcAtrZk" target="_blank" class="hero-cta-btn" style="text-decoration: none; width: 100%;" onclick="simulateSuccessAfterClick()">
-        <span>Pay ₹19 via UPI / Scanner</span>
-        <span>⚡</span>
+    <!-- Sticky Navbar -->
+    <header class="vip-navbar">
+      <a href="#" class="brand-group">
+        <div class="crown-circle">👑</div>
+        <span class="brand-title-text">Jiya Kumari</span>
       </a>
-      <div style="margin-top: 12px; font-size: 0.72rem; color: var(--text-muted);">🔒 256-Bit Encrypted Instant Unlock</div>
-    </div>
-  </div>
-
-  <!-- MAIN APP WRAPPER -->
-  <div class="app-container">
-    
-    <!-- Urgent Discount Ribbon -->
-    <div class="sale-ribbon">
-      <span>⚡ Flash Sale: 90% OFF Ends In: <span id="countdownTimer">04:59</span></span>
-    </div>
-
-    <!-- Header -->
-    <header class="vip-header">
-      <div class="brand-title">
-        <span>👑</span>
-        <span>Jiya Kumari</span>
+      <div class="nav-actions">
+        <a href="admin.html" class="btn-admin-link" title="Open Creator Studio Admin Panel">
+          <span>⚙️ Studio</span>
+        </a>
+        <button id="navVipBadge" class="vip-badge-btn" onclick="handleVipBadgeClick()">
+          <span class="pulse-indicator"></span>
+          <span id="navVipLabel">VIP Pass ₹19</span>
+        </button>
       </div>
-      <button class="btn-vip-pass" onclick="openModal('paymentModal')">
-        <span>VIP Pass ₹19</span>
-      </button>
     </header>
 
-    <!-- Profile Hero -->
-    <section class="profile-card">
-      <!-- 1024x1024 Profile Picture: 1.png -->
-      <div class="avatar-wrapper">
-        <img src="1.png" alt="Jiya Kumari Profile" class="avatar-img" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=1024&q=80'" />
-        <div class="verified-tick">✓</div>
+    <!-- Hero Section -->
+    <main>
+      <section class="hero-section">
+        <div class="hero-pill-badge">✨ Official Exclusive VIP Portal</div>
+        <h1 class="hero-main-title">
+          Welcome to <br />
+          <span class="script-highlight">Jiya Kumari Premium</span>
+        </h1>
+        <p class="hero-subtitle">
+          Unlock private high-definition photo galleries, behind-the-scenes video reels, and direct 1-on-1 VIP Telegram community access.
+        </p>
+
+        <!-- Profile Card -->
+        <div class="profile-card-glass">
+          <div class="profile-avatar-box">
+            <img 
+              src="1.png" 
+              alt="Jiya Kumari Profile Avatar" 
+              class="profile-avatar-img"
+              onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80';"
+            />
+            <div class="verified-checkmark">✓</div>
+          </div>
+
+          <h2 class="profile-name">
+            <span>Jiya Kumari</span>
+            <span style="font-size: 1.15rem; color: var(--champagne-gold);">✨</span>
+          </h2>
+          <div class="profile-handle-tag">@jiyapatel10 • Official Creator</div>
+
+          <!-- Social Stats -->
+          <div class="profile-stats-row">
+            <div class="stat-box">
+              <span class="stat-val">52.4K</span>
+              <span class="stat-desc">Followers</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-val">1,420+</span>
+              <span class="stat-desc">VIP Members</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-val" style="color: #10b981;">Active</span>
+              <span class="stat-desc">Status</span>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="profile-buttons-cluster">
+            <a href="https://www.facebook.com/profile.php?id=61569108239892" target="_blank" rel="noopener noreferrer" class="btn-action-pill btn-fb-official">
+              <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+              <span>Facebook Profile</span>
+            </a>
+
+            <a href="https://t.me/jiyapatel10" target="_blank" rel="noopener noreferrer" class="btn-action-pill btn-tg-official">
+              <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.121l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.535-.196 1.006.128.832.942z"/></svg>
+              <span>Telegram VIP Chat</span>
+            </a>
+
+            <button id="heroUnlockBtn" class="btn-action-pill btn-unlock-gold" onclick="openPaymentModal()">
+              <span>⚡ Unlock VIP Content (₹19)</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Gallery Section -->
+      <section id="galleryVault">
+        <div class="section-kicker-center">
+          <span class="kicker-sub">Exclusive Collection</span>
+          <h2 class="kicker-heading">Premium Media Vault</h2>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="gallery-filter-tabs" id="galleryTabs">
+          <button class="filter-btn-tab active" onclick="applyGalleryFilter('all', this)">All Content</button>
+          <button class="filter-btn-tab" onclick="applyGalleryFilter('photo', this)">Photos</button>
+          <button class="filter-btn-tab" onclick="applyGalleryFilter('video', this)">Video Reels</button>
+          <button class="filter-btn-tab" onclick="applyGalleryFilter('unlocked', this)">VIP Unlocked</button>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div class="gallery-layout-grid" id="galleryContainer"></div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="luxury-footer">
+      <div class="trust-grid-pills">
+        <div class="trust-pill-item"><span>🔒</span> 256-Bit Bank Grade SSL</div>
+        <div class="trust-pill-item"><span>⚡</span> Instant Razorpay Media Unlock</div>
+        <div class="trust-pill-item"><span>💬</span> 24/7 VIP Telegram Support</div>
+      </div>
+      <p class="footer-credit-text">© 2026 Jiya Kumari Premium. All Rights Reserved. Crafted with <span style="color:var(--primary-rose);">❤️</span> for VIP supporters.</p>
+      <button class="reset-test-pill" onclick="resetVipStatusForTesting()">Reset VIP Pass (Testing Mode)</button>
+    </footer>
+
+  </div>
+
+  <!-- 1. VIP Payment Modal -->
+  <div id="paymentModal" class="vip-modal-backdrop">
+    <div class="modal-veil" onclick="closePaymentModal()"></div>
+    <div class="modal-frame-box">
+      <button class="modal-dismiss-btn" onclick="closePaymentModal()">&times;</button>
+      
+      <div class="modal-crown-icon">💎</div>
+      <h3 class="modal-main-title">Unlock Jiya's VIP Pass</h3>
+      <p class="modal-paragraph">Get instant lifetime access to all hidden photos, HD reels, and direct Telegram VIP channel access.</p>
+
+      <div class="pricing-display-card">
+        <div class="price-text-col">
+          <span>Special Offer</span>
+          <strong>All-Access VIP Pass</strong>
+        </div>
+        <div class="price-big-number">₹19</div>
       </div>
 
-      <h1 class="creator-name">Jiya Kumari ✨</h1>
-      <div class="user-welcome-text" id="welcomeUserGreeting">Welcome to my Private Space</div>
-
-      <div class="stats-tray">
-        <div class="stat-pill">
-          <strong>54.2K</strong>
-          <span>Fans</span>
-        </div>
-        <div class="stat-pill">
-          <strong style="color: var(--gold-primary);">₹19 Only</strong>
-          <span>VIP Entry</span>
-        </div>
-        <div class="stat-pill">
-          <strong style="color: #10b981;">Active</strong>
-          <span>Live Now</span>
-        </div>
-      </div>
-
-      <button class="hero-cta-btn" onclick="openModal('paymentModal')">
-        <span>⚡ Unlock All Private Media (₹19)</span>
+      <button class="btn-pay-master" onclick="initiateRazorpayPayment()">
+        <span>Pay with Razorpay / UPI</span>
+        <span>➔</span>
       </button>
-    </section>
 
-    <!-- Gallery Section -->
-    <section>
-      <h2 class="section-title">Exclusive A4 Vault</h2>
-      <p class="section-sub">Photos & Video Reels shot in ultra-high vertical definition.</p>
+      <a href="https://rzp.io/rzp/RRcAtrZk" target="_blank" rel="noopener noreferrer" class="link-direct-pay" onclick="handleDirectLinkClick()">
+        Click here for Direct Payment Link (rzp.io)
+      </a>
 
-      <div class="gallery-grid" id="vaultGallery">
-        
-        <!-- Item 1: A4 Photo (1p.png) -->
-        <div class="a4-card is-locked" onclick="openModal('paymentModal')">
-          <div class="a4-media-frame">
-            <img src="1p.png" alt="VIP Photo 1" onerror="this.src='https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=80'" />
-            <div class="lock-banner-overlay">
-              <div class="lock-circle">🔒</div>
-              <div class="lock-pill-badge">Tap to Unlock ₹19</div>
-            </div>
-          </div>
-          <div class="card-footer-info">
-            <h4>Private Portrait #1</h4>
-            <span>A4 HD Photo</span>
-          </div>
+      <!-- UTR Manual Verification Fallback -->
+      <div class="utr-verify-panel">
+        <span class="utr-toggle-label" onclick="toggleUtrForm()">Already paid via UPI? Enter UTR / Verify</span>
+        <div class="utr-form-wrap" id="utrForm">
+          <input type="text" id="utrNumberInput" class="utr-input" placeholder="Enter 12-digit UTR or Transaction ID" />
+          <button class="btn-utr-submit" onclick="verifyUtrSubmission()">Verify</button>
         </div>
-
-        <!-- Item 2: A4 Video Reel (1v.mp4) -->
-        <div class="a4-card is-locked" onclick="openModal('paymentModal')">
-          <div class="a4-media-frame">
-            <video src="1v.mp4" muted loop playsinline></video>
-            <div class="lock-banner-overlay">
-              <div class="lock-circle">🎬</div>
-              <div class="lock-pill-badge">Watch Private Reel</div>
-            </div>
-          </div>
-          <div class="card-footer-info">
-            <h4>Behind The Scenes #1</h4>
-            <span>A4 HD Reel</span>
-          </div>
-        </div>
-
-        <!-- Item 3: A4 Photo (2p.png) -->
-        <div class="a4-card is-locked" onclick="openModal('paymentModal')">
-          <div class="a4-media-frame">
-            <img src="2p.png" alt="VIP Photo 2" onerror="this.src='https://images.unsplash.com/photo-1517841905240-472988babdf9?w=800&q=80'" />
-            <div class="lock-banner-overlay">
-              <div class="lock-circle">🔒</div>
-              <div class="lock-pill-badge">Tap to Unlock ₹19</div>
-            </div>
-          </div>
-          <div class="card-footer-info">
-            <h4>Midnight Glamour #2</h4>
-            <span>A4 HD Photo</span>
-          </div>
-        </div>
-
-        <!-- Item 4: A4 Video Reel (2v.mp4) -->
-        <div class="a4-card is-locked" onclick="openModal('paymentModal')">
-          <div class="a4-media-frame">
-            <video src="2v.mp4" muted loop playsinline></video>
-            <div class="lock-banner-overlay">
-              <div class="lock-circle">🎬</div>
-              <div class="lock-pill-badge">Watch Private Reel</div>
-            </div>
-          </div>
-          <div class="card-footer-info">
-            <h4>Personal Video Diary #2</h4>
-            <span>A4 HD Reel</span>
-          </div>
-        </div>
-
       </div>
-    </section>
+    </div>
+  </div>
+
+  <!-- 2. VIP Success Modal -->
+  <div id="successModal" class="vip-modal-backdrop">
+    <div class="modal-veil" onclick="closeSuccessModal()"></div>
+    <div class="modal-frame-box">
+      <button class="modal-dismiss-btn" onclick="closeSuccessModal()">&times;</button>
+      
+      <div style="font-size: 3.2rem; margin-bottom: 12px;">🎉</div>
+      <h3 class="modal-main-title">Payment Successful!</h3>
+      <p class="modal-paragraph" style="color: var(--champagne-gold); font-weight: 700;">Welcome to Jiya Kumari VIP Club ✨</p>
+      <p class="modal-paragraph">All media blurs are permanently removed across your entire browser session.</p>
+
+      <a href="https://t.me/jiyapatel10" target="_blank" rel="noopener noreferrer" class="btn-pay-master" style="background: linear-gradient(135deg, #0088cc, #00b4d8); color: #fff; text-decoration: none; margin: 16px 0 10px;">
+        <span>💬 Open Private Telegram VIP</span>
+        <span>➔</span>
+      </a>
+
+      <button class="btn-action-pill" style="width: 100%; background: rgba(255, 255, 255, 0.1); color: #fff;" onclick="closeSuccessModal()">
+        Browse Unlocked Vault
+      </button>
+    </div>
+  </div>
+
+  <!-- 3. Lightbox Media Modal -->
+  <div id="lightboxModal" class="lightbox-screen-holder">
+    <div class="lightbox-veil" onclick="closeLightbox()"></div>
+    <button class="modal-dismiss-btn" style="position: absolute; top: 24px; right: 24px; z-index: 10002;" onclick="closeLightbox()">&times;</button>
+    <div class="lightbox-enclosure" id="lightboxViewport"></div>
   </div>
 
   <script>
-    // 1. Submit Name & Sparkle Animation
-    function submitUserName() {
-      const input = document.getElementById('userNameInput');
-      let name = input.value.trim();
-      if (!name) name = "Special VIP Guest";
+    const RAZORPAY_KEY_ID = 'rzp_live_TdklEadv80vn89';
+    const RAZORPAY_AMOUNT_PAISE = 1900;
+    const DIRECT_PAYMENT_URL = 'https://rzp.io/rzp/RRcAtrZk';
+    const VIP_STORAGE_KEY = 'jiya_vip_unlocked';
+    const POSTS_STORAGE_KEY = 'jiya_custom_posts';
 
-      document.getElementById('welcomeUserGreeting').innerText = `Exclusive Offer For You, ${name} ✨`;
-      document.getElementById('modalPersonalHeader').innerText = `Special Pass for ${name}`;
-      closeModal('nameModal');
+    const navVipBadge = document.getElementById('navVipBadge');
+    const navVipLabel = document.getElementById('navVipLabel');
+    const heroUnlockBtn = document.getElementById('heroUnlockBtn');
+    const galleryContainer = document.getElementById('galleryContainer');
+    const paymentModal = document.getElementById('paymentModal');
+    const successModal = document.getElementById('successModal');
+    const lightboxModal = document.getElementById('lightboxModal');
+    const lightboxViewport = document.getElementById('lightboxViewport');
 
-      // Celebration Confetti
+    let isUserVip = false;
+    let activeFilter = 'all';
+
+    const DEFAULT_GALLERY_ITEMS = [
+      {
+        id: 'post_1',
+        type: 'photo',
+        title: 'Sunset Glamour',
+        subtitle: 'Private Portrait',
+        badge: 'HD Photo',
+        src: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=1000&q=85',
+        poster: '',
+        duration: '',
+        locked: true
+      },
+      {
+        id: 'post_2',
+        type: 'photo',
+        title: 'Midnight Elegance',
+        subtitle: 'Photoshoot Vault',
+        badge: 'Exclusive Look',
+        src: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=1000&q=85',
+        poster: '',
+        duration: '',
+        locked: true
+      },
+      {
+        id: 'post_3',
+        type: 'video',
+        title: 'Private Diary Reel',
+        subtitle: 'Behind The Scenes',
+        badge: 'Exclusive Video',
+        src: 'https://assets.mixkit.co/videos/preview/mixkit-woman-in-a-pink-dress-posing-41712-large.mp4',
+        poster: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=800&q=80',
+        duration: '00:45 min',
+        locked: true
+      },
+      {
+        id: 'post_4',
+        type: 'photo',
+        title: 'Candid Morning Glow',
+        subtitle: 'Special Collection',
+        badge: 'HD Photo',
+        src: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=1000&q=85',
+        poster: '',
+        duration: '',
+        locked: true
+      },
+      {
+        id: 'post_5',
+        type: 'video',
+        title: 'Flower Bloom Story',
+        subtitle: 'Romantic Moments',
+        badge: 'Exclusive Video',
+        src: 'https://assets.mixkit.co/videos/preview/mixkit-smiling-girl-with-flowers-41695-large.mp4',
+        poster: 'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?auto=format&fit=crop&w=800&q=80',
+        duration: '01:12 min',
+        locked: true
+      },
+      {
+        id: 'post_6',
+        type: 'photo',
+        title: 'Royalty Aesthetic',
+        subtitle: 'VIP Collection',
+        badge: 'HD Photo',
+        src: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=1000&q=85',
+        poster: '',
+        duration: '',
+        locked: true
+      }
+    ];
+
+    function loadVaultContent() {
+      isUserVip = localStorage.getItem(VIP_STORAGE_KEY) === 'true';
+
+      let items = [];
+      const stored = localStorage.getItem(POSTS_STORAGE_KEY);
+      if (stored) {
+        try {
+          items = JSON.parse(stored);
+        } catch (e) {
+          items = [];
+        }
+      }
+
+      if (!items || items.length === 0) {
+        items = [...DEFAULT_GALLERY_ITEMS];
+      }
+
+      const filtered = items.filter(item => {
+        if (activeFilter === 'all') return true;
+        if (activeFilter === 'photo') return item.type === 'photo';
+        if (activeFilter === 'video') return item.type === 'video';
+        if (activeFilter === 'unlocked') return isUserVip || !item.locked;
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        galleryContainer.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 60px 20px; color: var(--text-muted);">
+            <div style="font-size: 2.6rem; margin-bottom: 10px;">💎</div>
+            <h3 style="color: #fff; font-size: 1.2rem; margin-bottom: 6px;">No Media in this Category</h3>
+            <p style="font-size: 0.85rem;">Check back soon or upload new content in Creator Studio.</p>
+          </div>
+        `;
+        return;
+      }
+
+      galleryContainer.innerHTML = filtered.map(item => {
+        const isLocked = !isUserVip && item.locked;
+        const lockClass = isLocked ? 'is-locked' : '';
+
+        if (item.type === 'video') {
+          return `
+            <div class="media-vault-card ${lockClass}" data-kind="video">
+              <div class="card-preview-viewport">
+                <video src="${item.src}" poster="${item.poster || ''}" muted loop playsinline></video>
+                <div class="blur-shield-overlay" onclick="openPaymentModal()">
+                  <div class="lock-shield-bubble">🎬</div>
+                  <div class="lock-card-title">${escapeString(item.title)}</div>
+                  <div class="lock-card-badge">⚡ Unlock for ₹19</div>
+                </div>
+              </div>
+              <div class="card-meta-details">
+                <div class="card-headings-col">
+                  <h4>${escapeString(item.title)}</h4>
+                  <span>${escapeString(item.subtitle || 'Exclusive Video')} ${item.duration ? '• ' + escapeString(item.duration) : ''}</span>
+                </div>
+                <span class="badge-kind-tag" style="color:var(--soft-pink);">${escapeString(item.badge || 'Video Reel')}</span>
+              </div>
+              <button class="btn-card-unlocked" onclick="openLightboxMedia('${item.src}', 'video')">
+                ▶️ Play HD Video
+              </button>
+            </div>
+          `;
+        } else {
+          return `
+            <div class="media-vault-card ${lockClass}" data-kind="photo">
+              <div class="card-preview-viewport">
+                <img src="${item.src}" alt="${escapeString(item.title)}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80';" />
+                <div class="blur-shield-overlay" onclick="openPaymentModal()">
+                  <div class="lock-shield-bubble">🔒</div>
+                  <div class="lock-card-title">${escapeString(item.title)}</div>
+                  <div class="lock-card-badge">⚡ Unlock for ₹19</div>
+                </div>
+              </div>
+              <div class="card-meta-details">
+                <div class="card-headings-col">
+                  <h4>${escapeString(item.title)}</h4>
+                  <span>${escapeString(item.subtitle || 'Private Portrait')}</span>
+                </div>
+                <span class="badge-kind-tag">${escapeString(item.badge || 'HD Photo')}</span>
+              </div>
+              <button class="btn-card-unlocked" onclick="openLightboxMedia('${item.src}', 'photo')">
+                🔍 View Fullscreen
+              </button>
+            </div>
+          `;
+        }
+      }).join('');
+    }
+
+    function syncVipState() {
+      isUserVip = localStorage.getItem(VIP_STORAGE_KEY) === 'true';
+
+      if (isUserVip) {
+        navVipBadge.classList.add('unlocked');
+        navVipLabel.textContent = 'VIP Pass Active';
+        if (heroUnlockBtn) {
+          heroUnlockBtn.innerHTML = '<span>👑 VIP Unlocked • Full Access</span>';
+          heroUnlockBtn.style.background = 'linear-gradient(135deg, #10b981, #06b6d4)';
+          heroUnlockBtn.style.color = '#042f2e';
+        }
+      } else {
+        navVipBadge.classList.remove('unlocked');
+        navVipLabel.textContent = 'VIP Pass ₹19';
+        if (heroUnlockBtn) {
+          heroUnlockBtn.innerHTML = '<span>⚡ Unlock VIP Content (₹19)</span>';
+          heroUnlockBtn.style.background = 'var(--gold-gradient)';
+          heroUnlockBtn.style.color = '#261300';
+        }
+      }
+      loadVaultContent();
+    }
+
+    function unlockVipAccess(showSuccessPopup = true) {
+      localStorage.setItem(VIP_STORAGE_KEY, 'true');
+      syncVipState();
+      closePaymentModal();
+
       if (typeof confetti === 'function') {
         confetti({
-          particleCount: 100,
-          spread: 70,
+          particleCount: 120,
+          spread: 80,
           origin: { y: 0.6 }
         });
       }
+
+      if (showSuccessPopup) {
+        setTimeout(() => openSuccessModal(), 400);
+      }
     }
 
-    // Modal Handlers
-    function openModal(id) {
-      document.getElementById(id).classList.add('active');
-    }
-    function closeModal(id) {
-      document.getElementById(id).classList.remove('active');
-    }
+    function initiateRazorpayPayment() {
+      const options = {
+        key: RAZORPAY_KEY_ID,
+        amount: RAZORPAY_AMOUNT_PAISE,
+        currency: "INR",
+        name: "Jiya Kumari Premium",
+        description: "Lifetime VIP Media Access & Telegram Channel",
+        image: "1.png",
+        handler: function (response) {
+          if (response && response.razorpay_payment_id) {
+            unlockVipAccess(true);
+          }
+        },
+        theme: { color: "#ff2d75" }
+      };
 
-    // Direct Payment Click Fallback Unlock
-    function simulateSuccessAfterClick() {
-      setTimeout(() => {
-        closeModal('paymentModal');
-        document.querySelectorAll('.a4-card').forEach(c => {
-          c.classList.remove('is-locked');
-          c.classList.add('media-unlocked');
-        });
-        if (typeof confetti === 'function') {
-          confetti({ particleCount: 150, spread: 90 });
+      try {
+        if (typeof Razorpay === 'function') {
+          const rzpInstance = new Razorpay(options);
+          rzpInstance.on('payment.failed', () => {
+            window.location.href = DIRECT_PAYMENT_URL;
+          });
+          rzpInstance.open();
+        } else {
+          window.location.href = DIRECT_PAYMENT_URL;
         }
-      }, 4000);
+      } catch (e) {
+        window.location.href = DIRECT_PAYMENT_URL;
+      }
     }
 
-    // Countdown Timer (Urgency Driver)
-    let totalSeconds = 299;
-    setInterval(() => {
-      if (totalSeconds <= 0) totalSeconds = 300;
-      totalSeconds--;
-      const m = String(Math.floor(totalSeconds / 60)).padStart(2, '0');
-      const s = String(totalSeconds % 60).padStart(2, '0');
-      const timer = document.getElementById('countdownTimer');
-      if (timer) timer.innerText = `${m}:${s}`;
-    }, 1000);
-
-    // Live Fake Sale Notification Toasts
-    const fakeNames = ["Vikram from Mumbai", "Aman from Patna", "Sameer from Delhi", "Karan from Jaipur", "Ankit from Lucknow"];
-    setInterval(() => {
-      const toast = document.getElementById('liveToast');
-      const msg = document.getElementById('toastMsg');
-      const randomUser = fakeNames[Math.floor(Math.random() * fakeNames.length)];
-      msg.innerText = `🔥 ${randomUser} just unlocked VIP Pass (₹19)!`;
-      toast.classList.add('show');
+    function handleDirectLinkClick() {
       setTimeout(() => {
-        toast.classList.remove('show');
-      }, 3500);
-    }, 9000);
+        closePaymentModal();
+        openSuccessModal();
+      }, 2500);
+    }
 
-    // Subtle Romantic Sparkles Background
+    function toggleUtrForm() {
+      const form = document.getElementById('utrForm');
+      form.classList.toggle('is-visible');
+    }
+
+    function verifyUtrSubmission() {
+      const val = document.getElementById('utrNumberInput').value.trim();
+      if (val.length >= 8) {
+        unlockVipAccess(true);
+      } else {
+        alert('Please enter a valid 12-digit UPI UTR or Transaction reference number.');
+      }
+    }
+
+    function openPaymentModal() {
+      if (localStorage.getItem(VIP_STORAGE_KEY) === 'true') {
+        openSuccessModal();
+        return;
+      }
+      paymentModal.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closePaymentModal() {
+      paymentModal.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    function openSuccessModal() {
+      successModal.classList.add('is-open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSuccessModal() {
+      successModal.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+
+    function handleVipBadgeClick() {
+      if (localStorage.getItem(VIP_STORAGE_KEY) === 'true') {
+        openSuccessModal();
+      } else {
+        openPaymentModal();
+      }
+    }
+
+    function applyGalleryFilter(filter, btn) {
+      activeFilter = filter;
+      document.querySelectorAll('#galleryTabs .filter-btn-tab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      loadVaultContent();
+    }
+
+    function openLightboxMedia(src, type) {
+      if (localStorage.getItem(VIP_STORAGE_KEY) !== 'true') {
+        openPaymentModal();
+        return;
+      }
+
+      if (type === 'video') {
+        lightboxViewport.innerHTML = `<video src="${src}" controls autoplay playsinline style="max-width:100%; max-height:80vh;"></video>`;
+      } else {
+        lightboxViewport.innerHTML = `<img src="${src}" alt="VIP Image Fullscreen" />`;
+      }
+
+      lightboxModal.classList.add('is-visible');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeLightbox() {
+      lightboxModal.classList.remove('is-visible');
+      lightboxViewport.innerHTML = '';
+      document.body.style.overflow = '';
+    }
+
+    function resetVipStatusForTesting() {
+      localStorage.removeItem(VIP_STORAGE_KEY);
+      syncVipState();
+      alert('VIP Pass has been reset. Gallery blur is now re-enabled for testing.');
+    }
+
+    function escapeString(str) {
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
     const canvas = document.getElementById('sparkleCanvas');
     const ctx = canvas.getContext('2d');
+
     function resizeCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
@@ -682,31 +1444,36 @@
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
 
-    const sparkles = Array.from({ length: 30 }, () => ({
+    const particles = Array.from({ length: 35 }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      radius: Math.random() * 2 + 1,
-      speedY: Math.random() * 0.6 + 0.2,
-      opacity: Math.random() * 0.6 + 0.2
+      radius: Math.random() * 2.8 + 1,
+      speedY: Math.random() * 0.7 + 0.25,
+      opacity: Math.random() * 0.55 + 0.25,
+      color: Math.random() > 0.45 ? '#f59e0b' : '#ff2d75'
     }));
 
-    function renderSparkles() {
+    function animateParticles() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      sparkles.forEach(p => {
+      particles.forEach(p => {
         p.y -= p.speedY;
         if (p.y < -10) {
           p.y = canvas.height + 10;
           p.x = Math.random() * canvas.width;
         }
         ctx.globalAlpha = p.opacity;
-        ctx.fillStyle = '#f59e0b';
+        ctx.fillStyle = p.color;
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fill();
       });
-      requestAnimationFrame(renderSparkles);
+      requestAnimationFrame(animateParticles);
     }
-    renderSparkles();
+    animateParticles();
+
+    window.addEventListener('DOMContentLoaded', () => {
+      syncVipState();
+    });
   </script>
 </body>
 </html>
